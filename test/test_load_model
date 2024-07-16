@@ -1,0 +1,14 @@
+import traceback
+from packagename.registry import load_my_model
+
+def test_load_model():
+    try:
+        model = load_my_model()
+        print("Model loaded successfully.")
+        return True
+    except Exception as e:
+        print("Failed to load model:")
+        traceback.print_exc()
+        return False
+if __name__ == "__main__":
+    test_load_model()
