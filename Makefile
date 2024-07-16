@@ -19,6 +19,9 @@ clean:
 test_structure:
 	@bash tests/test_structure.sh
 
+test_load:
+	python tests/test_load_model.py
+
 #======================#
 #          API         #
 #======================#
