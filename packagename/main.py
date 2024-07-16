@@ -1,6 +1,6 @@
 from packagename.registry import load_my_model
 from tensorflow.keras.preprocessing.image import array_to_img, img_to_array, load_img
-from tkinter import *
+#from tkinter import *
 from PIL import Image
 import numpy as np
 from pathlib import Path
