@@ -7,6 +7,7 @@ from pathlib import Path
 from shapely.geometry import Polygon
 import matplotlib.pyplot as plt
 import cv2
+import os
 
 def preprocess(image):
     x=img_to_array(image)
@@ -45,27 +46,22 @@ def my_yolo_predict(image):
 
 def my_yolo_mask(xy_array_list,image):
     # Read the original image
-    image = cv2.imread(image)
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
-
+    #image = cv2.imread(image)
+    #image_rgb = cv2.imreadtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
     # Create a figure with two subplots (side by side)
     fig, axs = plt.subplots(1, 2, figsize=(12, 6))
-
     # Display the original image on the first subplot
-    axs[0].imshow(image_rgb)
+    axs[0].imshow(image)
     axs[0].set_title(f"Original Image")
     axs[0].axis('off')
-
     # Display the image with masks on the second subplot
-    axs[1].imshow(image_rgb)
-
+    axs[1].imshow(image)
     if xy_array_list:
         # Plot the masks
         for xy_array in xy_array_list:
             for xy in xy_array:
                 polygon = plt.Polygon(xy, closed=True, fill=None, edgecolor='r')
                 axs[1].add_patch(polygon)
-
                 # Calculate and display mask metrics
                 area, length, average_width = calculate_mask_metrics(xy)
                 axs[1].text(10, 10, f"Area: {area:.2f}\nLength: {length:.2f}\nAvg Width: {average_width:.2f}",
@@ -73,17 +69,15 @@ def my_yolo_mask(xy_array_list,image):
         axs[1].set_title(f"Image with Mask")
     else:
         axs[1].set_title(f"No crack detected")
-
     axs[1].axis('off')
-
     # Save the plot
     plt.tight_layout()
-
     plt.savefig('my_mask.jpeg',format='jpeg')
-
+    plt.close()
     my_mask=cv2.imread('my_mask.jpeg')
-
     return my_mask
+
+
 
 
 

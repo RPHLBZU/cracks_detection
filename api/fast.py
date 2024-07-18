@@ -3,6 +3,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from packagename.registry import load_my_model, load_my_yolo_model
 from packagename.main import preprocess, my_predict, my_yolo_mask
@@ -73,8 +74,10 @@ def yolo_predict(file: UploadFile = File(...)):
 
     else :
         cracks=0
-        my_mask=None
+        my_mask="no cracks"
 
 
-    return {'craks':cracks,
+    return {'cracks':cracks,
             'my_mask':my_mask}
+
+#return FileResponse (my_mask)
