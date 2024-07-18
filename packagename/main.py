@@ -45,8 +45,8 @@ def my_yolo_predict(image):
 
 def my_yolo_mask(xy_array_list,image):
     # Read the original image
-    image = (image)
-    image_rgb = cv2.cvcv2.imreadtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
+    image = cv2.imread(image)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
 
     # Create a figure with two subplots (side by side)
     fig, axs = plt.subplots(1, 2, figsize=(12, 6))
