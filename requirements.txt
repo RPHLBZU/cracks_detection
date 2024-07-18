@@ -20,3 +20,7 @@ uvicorn
 
 #Images
 pillow
+ultralytics
+shapely
+matplotlib
+opencv-python
