@@ -4,6 +4,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from starlette.responses import Response
 
 from packagename.registry import load_my_model, load_my_yolo_model
 from packagename.main import preprocess, my_predict, my_yolo_mask
@@ -12,6 +13,7 @@ from PIL import Image
 from pydantic import BaseModel
 from typing import List
 from io import BytesIO
+import cv2
 # from packagename.registry import load_model
 # from packagename.main import predict
 
@@ -53,7 +55,9 @@ def post_predict(file: UploadFile = File(...)):
 
     return {'prediction' : float(prediction[0][0])}
 
-@app.post("/yolo_predict")
+@app.post("/yolo_predict", responses={
+        204: {"description": "No cracks were detected"},
+        })
 def yolo_predict(file: UploadFile = File(...)):
     contents = file.file.read()
     image = Image.open(BytesIO(contents)).convert("RGB")
@@ -74,10 +78,8 @@ def yolo_predict(file: UploadFile = File(...)):
 
     else :
         cracks=0
-        my_mask="no cracks"
+        return JSONResponse(status_code=204,\
+                        content={"message": "No crack detected"})
 
-
-    return {'cracks':cracks,
-            'my_mask':my_mask}
-
-#return FileResponse (my_mask)
+    im = cv2.imencode('.png', my_mask)[1] # extension depends on which format is sent from Streamlit
+    return Response(content=im.tobytes(), media_type="image/jpg")
