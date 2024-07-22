@@ -54,18 +54,24 @@ def my_yolo_mask(xy_array_list,image):
     axs[0].imshow(image)
     axs[0].set_title(f"Original Image")
     axs[0].axis('off')
+
     # Display the image with masks on the second subplot
     axs[1].imshow(image)
     if xy_array_list:
+        #compute and plot severity
+        cracks_severity = 0
+        for xy_array in xy_array_list:
+            cracks_severity += calculate_severity(xy_array[0],image)
+
+        axs[1].text(10, 10, f"Severity: {cracks_severity:.2f}",
+                                color='white', fontsize=12, bbox=dict(facecolor='red', alpha=0.5))
+
         # Plot the masks
         for xy_array in xy_array_list:
             for xy in xy_array:
                 polygon = plt.Polygon(xy, closed=True, fill=None, edgecolor='r')
                 axs[1].add_patch(polygon)
-                # Calculate and display mask metrics
-                area, length, average_width = calculate_mask_metrics(xy)
-                axs[1].text(10, 10, f"Area: {area:.2f}\nLength: {length:.2f}\nAvg Width: {average_width:.2f}",
-                            color='white', fontsize=12, bbox=dict(facecolor='red', alpha=0.5))
+
         axs[1].set_title(f"Image with Mask")
     else:
         axs[1].set_title(f"No crack detected")
@@ -81,21 +87,23 @@ def my_yolo_mask(xy_array_list,image):
 
 
 
-def calculate_mask_metrics(xy_array):
+def calculate_severity(xy_array,image):
+
+    #Image area
+    width_img, height_img = image.size #attributes related to PIL library (used in fast.py to load image)
+    img_area = width_img*height_img
+
+
     # Convert xy array to a polygon
     polygon = Polygon(xy_array)
 
     # Calculate surface area
-    area = polygon.area
+    crack_area = polygon.area
 
-    # Calculate length (perimeter of the polygon)
-    length = polygon.length
+    #Calculate severity
+    severity = crack_area/img_area/2 #/2 because overestimated since mask significantly larger than crack
 
-    # Calculate the average width (area divided by length)
-    average_width = area / length if length != 0 else 0
-
-    return area, length, average_width
-
+    return severity
 
 
 
