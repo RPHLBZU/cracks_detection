@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from starlette.responses import Response
 
 from packagename.registry import load_my_model, load_my_yolo_model
-from packagename.main import preprocess, my_predict, my_yolo_mask
+from packagename.main import preprocess, my_predict, my_yolo_mask, calculate_severity
 
 from PIL import Image
 from pydantic import BaseModel
@@ -83,3 +83,26 @@ def yolo_predict(file: UploadFile = File(...)):
 
     im = cv2.imencode('.png', my_mask)[1] # extension depends on which format is sent from Streamlit
     return Response(content=im.tobytes(), media_type="image/jpg")
+
+@app.post('/predict_severity')
+def yolo_severity(file: UploadFile = File(...)):
+    contents = file.file.read()
+    image = Image.open(BytesIO(contents)).convert("RGB")
+    results = app.state.yolo_model(image)
+
+    my_severity = 0
+
+    # Check if masks were detected
+    if results:
+        for r in results:
+            if r.masks is not None:
+                # print(r.masks.xy[0])
+                my_severity += round(calculate_severity(r.masks.xy[0],image),4)
+
+
+    else :
+        cracks=0
+        return JSONResponse(status_code=204,\
+                        content={"message": "No crack detected"})
+
+    return {'severity' : float(my_severity)}
