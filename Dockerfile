@@ -36,7 +36,7 @@ RUN pip install .
 RUN mkdir /models
 
 COPY models/yolo_crack_segm_weights_30train.pt /models/yolo_crack_segm_weights_30train.pt
-COPY models/my_model.keras /models/model_2.keras
+COPY models/model_2.keras /models/model_2.keras
 # TODO: to speed up, you can load your model from MLFlow or Google Cloud Storage at startup using
 
 # These commands install the cv2 dependencies that are normally present on the local machine, but might be missing in your Docker container causing the issue

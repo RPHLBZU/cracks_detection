@@ -68,7 +68,7 @@ docker_run_local_interactively:
 DOCKER_IMAGE_PATH := $(GCP_REGION)-docker.pkg.dev/$(GCP_PROJECT)/$(DOCKER_REPO_NAME)/$(DOCKER_IMAGE_NAME)
 
 docker_build:
-	docker build \
+	docker build --no-cache\
 		--platform linux/amd64 \
 		-t $(DOCKER_IMAGE_PATH):prod .
 
