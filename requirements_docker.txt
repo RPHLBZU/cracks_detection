@@ -23,5 +23,5 @@ pillow
 ultralytics
 shapely
 matplotlib
-cv2
+
 opencv-python
